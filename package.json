@@ -1,0 +1,31 @@
+{
+	"name": "dbf",
+	"version": "1.0.0",
+	"description": "A simple Discord bot framework",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "node test/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/eartharoid/dbf.js.git"
+	},
+	"keywords": [
+		"discord.js"
+	],
+	"author": "eartharoid",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/eartharoid/dbf.js/issues"
+	},
+	"homepage": "https://github.com/eartharoid/dbf.js#readme",
+	"dependencies": {
+		"discord.js": "^13.6.0",
+		"node-dir": "^0.1.17"
+	},
+	"devDependencies": {
+		"dotenv": "^16.0.0",
+		"eslint": "^8.11.0",
+		"eslint-plugin-unused-imports": "^2.0.0"
+	}
+}
