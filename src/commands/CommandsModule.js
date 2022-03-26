@@ -12,7 +12,7 @@ const { Collection } = require('discord.js');
 const { Error } = require('../errors');
 const readline = require('readline');
 const { relative } = require('path');
-let a = 0;
+
 module.exports = class CommandsModule extends Module {
 	constructor(client) {
 		super(client, 'commands');
@@ -76,22 +76,18 @@ module.exports = class CommandsModule extends Module {
 	 * @param {boolean} reload Has the component already been loaded?
 	 */
 	load(filepath, reload) {
-		if (a < 10) {
-			const Command = require(filepath);
-			const command = new Command(this.client);
-			command.filepath = filepath;
-			if (!reload && this.components.has(command.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', command.id, this.name);
-			const rel = relative(this.client.baseDir, filepath);
-			const parts = rel.split(/\//g);
-			let type = parts[1];
-			if (type === 'menu') type = command.type;
-			if (!Object.keys(this.commands).includes(type)) throw new Error('F_INVALID_COMMAND_TYPE', type);
-			this.components.set(command.id, command);
-			this.commands[type].set(command.name, command);
-			this.emit('componentLoad', command);
-			a++
-			return true;
-		}
+		const Command = require(filepath);
+		const command = new Command(this.client);
+		command.filepath = filepath;
+		if (!reload && this.components.has(command.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', command.id, this.name);
+		const rel = relative(this.client.baseDir, filepath);
+		const parts = rel.split(/\//g);
+		let type = parts[1];
+		if (type === 'menu') type = command.type;
+		if (!Object.keys(this.commands).includes(type)) throw new Error('F_INVALID_COMMAND_TYPE', type);
+		this.components.set(command.id, command);
+		this.commands[type].set(command.name, command);
+		this.emit('componentLoad', command);
 	}
 
 
