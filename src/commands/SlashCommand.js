@@ -23,19 +23,17 @@
  */
 
 /**
- * @typedef SlashCommandOptions
- * @property {string} name The name of the command
- * @property {Object.<string, string>} [i18nName] The localised name of the command
- * @property {string} description The description of the command
- * @property {Object.<string, string>} [i18nDescription] The localised description of the command
- * @property {CommandOption} options
- * @property {boolean} [default_permission] Enabled by default?
+ * @typedef {Object} SlashCommandOptions
+ * @property {CommandOption} options Chat command options
+ * @property {boolean} [defaultPermission] Enabled by default?
+ *
+ * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & SlashCommandOptions} DiscordSlashCommandOptions
  */
 module.exports = class SlashCommand {
 	/**
 	 * Create a new slash command
 	 * @param {import('../Client')} client
-	 * @param {SlashCommandOptions} options
+	 * @param {DiscordSlashCommandOptions} options
 	 */
 	constructor(client, options) {
 		this.client = client;

@@ -5,10 +5,11 @@ const readline = require('readline');
 
 /**
  * @typedef Commands
- * @property {Collection<string, import('./MenuCommand')>} menu
+ * @property {Collection<string, import('./MenuCommand')>} message
  * @property {Collection<string, import('./SlashCommand')>} slash
  * @property {Collection<string, import('./StdinCommand')>} stdin
  * @property {Collection<string, import('./TextCommand')>} text
+ * @property {Collection<string, import('./MenuCommand')>} user
  */
 
 module.exports = class CommandsModule extends Module {

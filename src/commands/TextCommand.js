@@ -1,16 +1,13 @@
-/**
- * @typedef TextCommandOptions
- * @property {string} name The name of the command
- */
-module.exports = class MenuCommand {
+const DiscordCommand = require('./DiscordCommand');
+
+module.exports = class TextCommand extends DiscordCommand {
 	/**
 	 * Create a new menu command
 	 * @param {import('../Client')} client
-	 * @param {TextCommandOptions} options
+	 * @param {import('./DiscordCommand').DiscordCommandOptions} options
 	 */
 	constructor(client, options) {
-		this.client = client;
-		this.name = options.name;
+		super(client, options);
 	}
 
 	/**

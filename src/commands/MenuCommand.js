@@ -1,22 +1,20 @@
+const DiscordCommand = require('./DiscordCommand');
 /**
- * @typedef MenuCommandOptions
+ * @typedef {Object} MenuCommandOptions
  * @property {string} type `message` or `user`
- * @property {string} name The name of the command
- * @property {Object.<string, string>} [i18nName] The localised name of the command
- * @property {string} description The description of the command
- * @property {Object.<string, string>} [i18nDescription] The localised description of the command
- * @property {boolean} [default_permission] Enabled by default?
+ * @property {boolean} [defaultPermission] Enabled by default?
+ *
+ * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & MenuCommandOptions} DiscordMenuCommandOptions
  */
-module.exports = class MenuCommand {
+module.exports = class MenuCommand extends DiscordCommand{
 	/**
 	 * Create a new menu command
 	 * @param {import('../Client')} client
-	 * @param {MenuCommandOptions} options
+	 * @param {DiscordMenuCommandOptions} options
 	 */
 	constructor(client, options) {
-		this.client = client;
+		super(client, options);
 		this.type = options.type;
-		this.name = options.name;
 	}
 
 	/**
