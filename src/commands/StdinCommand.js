@@ -1,15 +1,28 @@
 /**
  * @typedef StdinCommandOptions
  * @property {string} name The name of the command
+ *
+ * @typedef {StdinCommandOptions & import('../Component').ComponentOptions} StdinCommandComponentOptions
  */
-module.exports = class MenuCommand {
+
+const Component = require('../Component');
+
+module.exports = class StdinCommand extends Component {
 	/**
 	 * Create a new menu command
 	 * @param {import('../Client')} client
-	 * @param {StdinCommandOptions} options
+	 * @param {StdinCommandComponentOptions} options
 	 */
 	constructor(client, options) {
-		this.client = client;
+		super(client, {
+			id: options.id,
+			moduleName: 'commands',
+		});
+
+		/**
+		 * The name of the command
+		 * @type {string}
+		 */
 		this.name = options.name;
 	}
 

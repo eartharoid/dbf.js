@@ -1,3 +1,8 @@
+/**
+ * @typedef FrameworkOptions
+ * @property {string} [baseDir] Defaults to `./src` if it exists, `./` if it does not
+ */
+
 const {
 	Client: DiscordClient,
 	Collection,
@@ -5,10 +10,6 @@ const {
 const fs = require('fs');
 const CommandsModule = require('./commands/CommandsModule.js');
 
-/**
- * @typedef FrameworkOptions
- * @property {string} [baseDir] Defaults to `./src` if it exists, `./` if it does not
- */
 
 /**
  * The Discord client
@@ -34,6 +35,15 @@ module.exports = class Client extends DiscordClient {
 		 */
 		this.mods = new Collection();
 
-		new CommandsModule(this);
+		// this.conditions =
+		// this.autocomplete =
+		this.commands = new CommandsModule(this);
+		// this.listeners = // must be initialised last
+
+		// this.listeners.loadAll(); // must be loaded first
+		// this.conditions.loadAll();
+		// this.autocomplete.loadAll();
+		this.commands.loadAll();
+
 	}
 };

@@ -1,4 +1,3 @@
-const DiscordCommand = require('./DiscordCommand');
 /**
  * @typedef {Object} MenuCommandOptions
  * @property {string} type `message` or `user`
@@ -6,7 +5,10 @@ const DiscordCommand = require('./DiscordCommand');
  *
  * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & MenuCommandOptions} DiscordMenuCommandOptions
  */
-module.exports = class MenuCommand extends DiscordCommand{
+
+const DiscordCommand = require('./DiscordCommand');
+
+module.exports = class MenuCommand extends DiscordCommand {
 	/**
 	 * Create a new menu command
 	 * @param {import('../Client')} client
@@ -14,7 +16,18 @@ module.exports = class MenuCommand extends DiscordCommand{
 	 */
 	constructor(client, options) {
 		super(client, options);
+
+		/**
+		 * `message` or `user`
+		 * @type {string}
+		 */
 		this.type = options.type;
+
+		/**
+		 * Enabled by default?
+		 * @type {boolean}
+		 */
+		this.defaultPermission = options.defaultPermission ?? true;
 	}
 
 	/**

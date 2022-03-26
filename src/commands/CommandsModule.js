@@ -1,8 +1,3 @@
-const Module = require('../Module');
-const { Collection } = require('discord.js');
-const { Error } = require('../errors');
-const readline = require('readline');
-
 /**
  * @typedef Commands
  * @property {Collection<string, import('./MenuCommand')>} message
@@ -11,6 +6,12 @@ const readline = require('readline');
  * @property {Collection<string, import('./TextCommand')>} text
  * @property {Collection<string, import('./MenuCommand')>} user
  */
+
+const Module = require('../Module');
+const { Collection } = require('discord.js');
+const { Error } = require('../errors');
+const readline = require('readline');
+const { relative } = require('path');
 
 module.exports = class CommandsModule extends Module {
 	constructor(client) {
@@ -42,6 +43,7 @@ module.exports = class CommandsModule extends Module {
 			if (this.commands.stdin.has(commandName)) {
 				const command = this.commands.stdin.get(commandName);
 				try {
+					this.emit('commandRun', 'stdin', command, { args });
 					await command.run(args);
 					this.emit('commandSuccess', 'stdin', command, { args });
 				} catch (error) {
@@ -68,21 +70,23 @@ module.exports = class CommandsModule extends Module {
 		}
 	}
 
-	async load() {
-		const files = await this.readDir();
-		for (const file of files) {
-			try {
-				const parts = file.split(/\//g);
-				const Command = require(file);
-				const command = new Command(this.client);
-				let type = parts[parts.length - 2];
-				if (type === 'menu') type = command.type;
-				if (!Object.keys(this.commands).includes(type)) return this.emit('error', new Error('F_INVALID_COMMAND_TYPE', type));
-				this.commands[type].set(command.name, command);
-				this.emit('load', command);
-			} catch (error) {
-				this.emit('error', new Error('F_MOD_LOADING_ERROR', this.name, error.message ?? error));
-			}
-		}
+	/**
+	 * Load a command
+	 * @param {import('../Component')} command The command to load
+	 * @param {string} file The filepath of the command
+	 */
+	load(command, file) {
+		command.filepath = file;
+		const rel = relative(this.client.baseDir, file);
+		const parts = rel.split(/\//g);
+		let type = parts[1];
+		if (type === 'menu') type = command.type;
+		if (!Object.keys(this.commands).includes(type)) return this.emit('error', new Error('F_INVALID_COMMAND_TYPE', type));
+		this.components.set(command.id, command);
+		this.commands[type].set(command.name, command);
+		this.emit('componentLoad', command);
+		return true;
 	}
+
+
 };

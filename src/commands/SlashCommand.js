@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 /**
  * A command option choice
  * @typedef OptionChoice
@@ -29,15 +31,24 @@
  *
  * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & SlashCommandOptions} DiscordSlashCommandOptions
  */
-module.exports = class SlashCommand {
+
+const DiscordCommand = require('./DiscordCommand');
+
+module.exports = class SlashCommand extends DiscordCommand {
 	/**
 	 * Create a new slash command
 	 * @param {import('../Client')} client
 	 * @param {DiscordSlashCommandOptions} options
 	 */
 	constructor(client, options) {
-		this.client = client;
-		this.name = options.name;
+		super(client, options);
+
+		/**
+		 * Enabled by default?
+		 * @type {boolean}
+		 */
+		this.defaultPermission = options.defaultPermission ?? true;
+		this.defaultPermission = options.defaultPermission ?? true;
 	}
 
 	/**
