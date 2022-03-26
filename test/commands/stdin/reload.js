@@ -9,8 +9,7 @@ module.exports = class ReloadCommand extends StdinCommand {
 	}
 
 	async run() {
-		const commandsModule = this.client.mods.get('commands');
-		commandsModule.components.forEach(value => value.reload());
-		console.log(`Reloaded ${commandsModule.components.size} commands`);
+		this.client.commands.components.forEach(command => command.reload());
+		console.log(`Reloaded ${this.client.commands.components.size} commands`);
 	}
 };

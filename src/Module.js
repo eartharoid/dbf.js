@@ -37,12 +37,14 @@ module.exports = class Module extends EventEmitter {
 	/**
 	 * Load a component
 	 * @abstract
-	 * @param {import('./Component')} component The component to load
-	 * @param {string} file The filepath of the component
+	 * @param {string} filepath The filepath of the component
+	 * @param {boolean} reload Has the component already been loaded?
 	 */
-	load(component, file) {
-		if (this.components.has(component.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', component.id, this.name);
-		component.filepath = file;
+	load(filepath, reload) {
+		const Component = require(filepath);
+		const component = new Component(this.client);
+		component.filepath = filepath;
+		if (!reload && this.components.has(component.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', component.id, this.name);
 		this.components.set(component.id, component);
 		this.emit('componentLoad', component);
 		return true;
@@ -53,9 +55,7 @@ module.exports = class Module extends EventEmitter {
 		const files = this.listFiles();
 		for (const file of files) {
 			try {
-				const Component = require(file);
-				const component = new Component(this.client);
-				this.load(component, file);
+				this.load(file);
 			} catch (error) {
 				this.emit('error', new Error('F_MOD_LOADING_ERROR', this.name, error));
 			}
@@ -67,14 +67,12 @@ module.exports = class Module extends EventEmitter {
 	 * @param {string} id The ID of the component to reload
 	 */
 	reload(id) {
+		// don't fully unload (using unload method) as removing it from `this.components` could cause an infinite loop
 		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
-		let component = this.components.get(id);
-		const filepath = component.filepath;
-		delete require.cache[filepath];
-		const Component = require(filepath);
-		component = new Component(this.client);
-		this.load(component, filepath);
-		this.emit('componentReload', component);
+		const component = this.components.get(id);
+		delete require.cache[component.filepath];
+		this.load(component.filepath, true);
+		this.emit('componentReload', id);
 		return true;
 	}
 
