@@ -29,6 +29,7 @@ module.exports = class DiscordCommand extends Component {
 		 * @type {string}
 		 */
 		this.name = options.name;
+		if (!this.name || typeof this.name !== 'string') throw new TypeError('F_INVALID_TYPE', 'name', 'string', typeof this.name);
 
 		/**
 		 * The localised name of the command
@@ -41,6 +42,7 @@ module.exports = class DiscordCommand extends Component {
 		 * @type {string}
 		 */
 		this.description = options.description;
+		if (!this.name || typeof this.name !== 'string') throw new TypeError('F_INVALID_TYPE', 'name', 'string', typeof this.name);
 
 		/**
 		 * The localised description of the command

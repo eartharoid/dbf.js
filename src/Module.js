@@ -67,11 +67,10 @@ module.exports = class Module extends EventEmitter {
 	 * @param {string} id The ID of the component to reload
 	 */
 	reload(id) {
-		// don't fully unload (using unload method) as removing it from `this.components` could cause an infinite loop
 		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
-		const component = this.components.get(id);
-		delete require.cache[component.filepath];
-		this.load(component.filepath, true);
+		const filepath = this.components.get(id).filepath;
+		this.unload(id, true);
+		this.load(filepath, true);
 		this.emit('componentReload', id);
 		return true;
 	}
@@ -83,12 +82,14 @@ module.exports = class Module extends EventEmitter {
 	/**
 	 * Unload a component
 	 * @param {string} id The ID of the component to unload
+	 * @param {boolean} reload Is the component about to be loaded again?
 	 */
-	unload(id) {
+	unload(id, reload) {
 		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
 		const component = this.components.get(id);
 		delete require.cache[component.filepath];
-		this.components.delete(id);
+		// don't fully unload (using unload method) as removing it from `this.components` could cause an infinite loop
+		if (!reload) this.components.delete(id);
 		this.emit('componentUnload', id);
 		return true;
 	}

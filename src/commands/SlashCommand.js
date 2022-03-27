@@ -43,6 +43,9 @@ module.exports = class SlashCommand extends DiscordCommand {
 	constructor(client, options) {
 		super(client, options);
 
+		/** @type {string} */
+		this.type = 'slash';
+
 		/**
 		 * Enabled by default?
 		 * @type {boolean}

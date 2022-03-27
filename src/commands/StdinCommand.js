@@ -19,11 +19,15 @@ module.exports = class StdinCommand extends Component {
 			moduleName: 'commands',
 		});
 
+		/** @type {string} */
+		this.type = 'stdin';
+
 		/**
 		 * The name of the command
 		 * @type {string}
 		 */
 		this.name = options.name;
+		if (!this.name || typeof this.name !== 'string') throw new TypeError('F_INVALID_TYPE', 'name', 'string', typeof this.name);
 	}
 
 	/**

@@ -8,6 +8,9 @@ module.exports = class TextCommand extends DiscordCommand {
 	 */
 	constructor(client, options) {
 		super(client, options);
+
+		/** @type {string} */
+		this.type = 'text';
 	}
 
 	/**

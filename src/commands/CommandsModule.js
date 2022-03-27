@@ -43,11 +43,11 @@ module.exports = class CommandsModule extends Module {
 			if (this.commands.stdin.has(commandName)) {
 				const command = this.commands.stdin.get(commandName);
 				try {
-					this.emit('commandRun', 'stdin', command, { args });
+					this.emit('commandRun', command, { args });
 					await command.run(args);
-					this.emit('commandSuccess', 'stdin', command, { args });
+					this.emit('commandSuccess', command, { args });
 				} catch (error) {
-					this.emit('commandError', 'stdin', command, { error });
+					this.emit('commandError', command, { error });
 				}
 			} else {
 				this.emit('commandAttempt', 'stdin', 'EXISTENCE',  { commandName });
@@ -77,6 +77,7 @@ module.exports = class CommandsModule extends Module {
 	 */
 	load(filepath, reload) {
 		const Command = require(filepath);
+		/** @type {import('../Component')} */
 		const command = new Command(this.client);
 		command.filepath = filepath;
 		if (!reload && this.components.has(command.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', command.id, this.name);
@@ -89,6 +90,4 @@ module.exports = class CommandsModule extends Module {
 		this.commands[type].set(command.name, command);
 		this.emit('componentLoad', command);
 	}
-
-
 };

@@ -8,7 +8,8 @@ const {
 	Collection,
 } = require('discord.js');
 const fs = require('fs');
-const CommandsModule = require('./commands/CommandsModule.js');
+const CommandsModule = require('./commands/CommandsModule');
+const ListenersModule= require('./listeners/ListenersModule');
 
 
 /**
@@ -38,9 +39,9 @@ module.exports = class Client extends DiscordClient {
 		// this.conditions =
 		// this.autocomplete =
 		this.commands = new CommandsModule(this);
-		// this.listeners = // must be initialised last
+		this.listeners = new ListenersModule(this); // must be initialised last
 
-		// this.listeners.loadAll(); // must be loaded first
+		this.listeners.loadAll(); // must be loaded first
 		// this.conditions.loadAll();
 		// this.autocomplete.loadAll();
 		this.commands.loadAll();
