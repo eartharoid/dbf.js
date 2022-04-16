@@ -1,5 +1,5 @@
 {
-	"name": "dbf",
+	"name": "dbf.js",
 	"version": "0.0.1",
 	"description": "A simple Discord bot framework",
 	"main": "src/index.js",
