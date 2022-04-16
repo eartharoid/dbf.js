@@ -14,6 +14,6 @@ module.exports = class CommandRunListener extends Listener {
 	 * @param {*} ctx
 	 */
 	async run(command, ctx) {
-		console.log(`${command.type}:${command.name} command used`, ctx);
+		console.log(`${command.type}:${command.name} command used`);
 	}
 };

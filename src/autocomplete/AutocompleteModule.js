@@ -4,7 +4,7 @@ module.exports = class AutocompleteModule extends Module {
 	constructor(client) {
 		super(client, 'autocomplete');
 
-		this.client.on('interactionCreate', this.handleInteraction);
+		this.client.on('interactionCreate', interaction => this.handleInteraction(interaction));
 	}
 
 	/**

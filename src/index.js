@@ -1,4 +1,6 @@
 module.exports = {
+	AutocompleteModule: require('./autocomplete/AutocompleteModule'),
+	Autocompleter: require('./autocomplete/Autocompleter'),
 	Client: require('./Client'),
 	CommandsModule: require('./commands/CommandsModule'),
 	Component: require('./Component'),
