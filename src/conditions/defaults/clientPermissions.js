@@ -18,6 +18,7 @@ module.exports = class ClientPermissionsCondition extends Condition {
 	 */
 	async run(type, command, interactionOrMessage) {
 		if (!interactionOrMessage.guild) return true;
+		if (command.clientPermissions.length === 0) return true;
 		const clientPermissions = interactionOrMessage.guild.me.permissionsIn(interactionOrMessage.channel);
 		return !clientPermissions.has(command.clientPermissions);
 	}

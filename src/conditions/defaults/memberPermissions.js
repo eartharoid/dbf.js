@@ -18,6 +18,7 @@ module.exports = class MemberPermissionsCondition extends Condition {
 	 */
 	async run(type, command, interactionOrMessage) {
 		if (!interactionOrMessage.guild) return true;
+		if (command.memberPermissions.length === 0) return true;
 		const memberPermissions = interactionOrMessage.member.permissionsIn(interactionOrMessage.channel);
 		return !memberPermissions.has(command.memberPermissions);
 	}

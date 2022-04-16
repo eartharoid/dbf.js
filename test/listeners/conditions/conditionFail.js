@@ -10,7 +10,7 @@ module.exports = class ConditionFailListener extends Listener {
 	}
 
 	async run(name, ctx) {
-		console.log('cond#fail', name, ctx);
+		console.log('cond#fail', name);
 		// ctx.interaction or ctx.message
 	}
 };

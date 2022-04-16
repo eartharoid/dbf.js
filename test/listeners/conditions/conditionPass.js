@@ -10,7 +10,7 @@ module.exports = class ConditionPassListener extends Listener {
 	}
 
 	async run(name, ctx) {
-		console.log('cond#pass', name, ctx);
+		console.log('cond#pass', name);
 		// ctx.interaction or ctx.message
 	}
 };

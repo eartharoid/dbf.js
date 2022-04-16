@@ -140,7 +140,7 @@
 			"error"
 		],
 		"no-underscore-dangle": [
-			"error",
+			"warn",
 			{
 				"allowAfterThis": true,
 				"allowFunctionParams": true

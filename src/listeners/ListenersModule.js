@@ -17,7 +17,8 @@ module.exports = class ListenersModule extends Module {
 		const listener = new Listener(this.client);
 		listener.filepath = filepath;
 		if (!reload && this.components.has(listener.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', listener.id, this.name);
-		listener.emitter[listener.once ? 'once' : 'on'](listener.event, listener.run);
+		listener._run = (...args) => listener.run(...args);
+		listener.emitter[listener.once ? 'once' : 'on'](listener.event, listener._run);
 		this.components.set(listener.id, listener);
 		this.emit('componentLoad', listener, reload ?? false);
 		return true;
@@ -32,7 +33,7 @@ module.exports = class ListenersModule extends Module {
 		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
 		/** @type {import('./Listener')} */
 		const listener = this.components.get(id);
-		listener.emitter.off(listener.event, listener.run); // remove the listener from the EventEmitter
+		listener.emitter.off(listener.event, listener._run); // remove the listener from the EventEmitter
 		delete require.cache[listener.filepath];
 		if (!reload) this.components.delete(id);
 		this.emit('componentUnload', id, reload ?? false);

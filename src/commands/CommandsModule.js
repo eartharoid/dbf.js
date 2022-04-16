@@ -14,8 +14,6 @@ module.exports = class CommandsModule extends Module {
 	constructor(client) {
 		super(client, 'commands');
 
-		this.client.on('interactionCreate', this.handleInteraction);
-
 		/**
 		 * All loaded commands
 		 * @type {Commands}
@@ -34,9 +32,9 @@ module.exports = class CommandsModule extends Module {
 			output: process.stdout,
 		});
 
-		this.std.on('line', this.handleStdin);
-		this.client.on('interactionCreate', this.handleInteraction);
-		this.client.on('messageCreate', this.handleMessage);
+		this.std.on('line', input => this.handleStdin(input));
+		this.client.on('interactionCreate', interaction =>  this.handleInteraction(interaction));
+		this.client.on('messageCreate', message => this.handleMessage(message));
 
 	}
 
@@ -143,6 +141,8 @@ module.exports = class CommandsModule extends Module {
 
 	/** Publish the application (interaction) commands to Discord */
 	async publish() {
+		// const fetched = await this.client.application.commands.fetch();
+		// for (const [, command] of fetched) await command.delete();
 		const commands = this.components
 			.filter(c => ['message', 'slash', 'user'].includes(c.type))
 			.map(c => c.toJSON());

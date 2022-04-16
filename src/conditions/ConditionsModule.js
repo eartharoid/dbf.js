@@ -56,11 +56,11 @@ module.exports = class ConditionsModule extends Module {
 
 	/**
 	 * @param {string} type `message` or `interaction`
-	 * @param {Component} command
 	 * @param {import('discord.js').Interaction|Message} interactionOrMessage
+	 * @param {Component} command
 	 * @param {Collection<string, Condition>} conditions
 	 */
-	async try(type, command, interactionOrMessage, conditions) {
+	async try(type, interactionOrMessage, command, conditions) {
 		try {
 			for (const [, condition] of conditions) {
 				const result = await condition.run(type, command, interactionOrMessage);

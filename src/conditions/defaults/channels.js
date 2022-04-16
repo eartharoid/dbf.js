@@ -18,8 +18,8 @@ module.exports = class ChannelsCondition extends Condition {
 	 */
 	async run(type, command, interactionOrMessage) {
 		const channelType = interactionOrMessage.channel.type;
-		return command.channelType === 'all'
-			? true : command.channelType === 'guild' && channelType !== 'DM'
-				? command.channelType === 'dm' && channelType === 'DM' : false;
+		return command.channels === 'all'
+			? true : command.channels === 'guild' && channelType !== 'DM'
+				? command.channels === 'dm' && channelType === 'DM' : false;
 	}
 };

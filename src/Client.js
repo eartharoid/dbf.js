@@ -5,6 +5,7 @@ const {
 const fs = require('fs');
 
 const ConditionsModule = require('./conditions/ConditionsModule');
+const AutocompleteModule = require('./autocomplete/AutocompleteModule');
 const CommandsModule = require('./commands/CommandsModule');
 const ListenersModule = require('./listeners/ListenersModule');
 
@@ -40,13 +41,13 @@ module.exports = class Client extends DiscordClient {
 		this.mods = new Collection();
 
 		this.conditions = new ConditionsModule(this);
-		// this.autocomplete =
+		this.autocomplete = new AutocompleteModule(this);
 		this.commands = new CommandsModule(this);
 		this.listeners = new ListenersModule(this); // must be initialised last
 
 		this.listeners.loadAll(); // must be loaded first
 		this.conditions.loadAll();
-		// this.autocomplete.loadAll();
+		this.autocomplete.loadAll();
 		this.commands.loadAll();
 	}
 };
