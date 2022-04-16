@@ -4,6 +4,7 @@
 	"description": "A simple Discord bot framework",
 	"main": "src/index.js",
 	"scripts": {
+		"lint": "eslint src --fix",
 		"test": "node test/index.js"
 	},
 	"repository": {

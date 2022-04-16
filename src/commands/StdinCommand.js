@@ -1,11 +1,5 @@
-/**
- * @typedef StdinCommandOptions
- * @property {string} name The name of the command
- *
- * @typedef {StdinCommandOptions & import('../Component').ComponentOptions} StdinCommandComponentOptions
- */
-
 const Component = require('../Component');
+const { TypeError } = require('../errors');
 
 module.exports = class StdinCommand extends Component {
 	/**
@@ -36,3 +30,10 @@ module.exports = class StdinCommand extends Component {
 	 */
 	async run() { }
 };
+
+/**
+ * @typedef StdinCommandOptions
+ * @property {string} name The name of the command
+ *
+ * @typedef {StdinCommandOptions & import('../Component').ComponentOptions} StdinCommandComponentOptions
+ */

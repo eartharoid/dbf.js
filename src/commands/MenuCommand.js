@@ -1,11 +1,3 @@
-/**
- * @typedef {Object} MenuCommandOptions
- * @property {string} type `message` or `user`
- * @property {boolean} [defaultPermission] Enabled by default?
- *
- * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & MenuCommandOptions} DiscordMenuCommandOptions
- */
-
 const DiscordCommand = require('./DiscordCommand');
 
 module.exports = class MenuCommand extends DiscordCommand {
@@ -37,6 +29,20 @@ module.exports = class MenuCommand extends DiscordCommand {
 	async run() { }
 
 	toJSON() {
-		return {};
+		return {
+			defaultPermission: this.defaultPermission,
+			description: this.description,
+			i18nDescription: this.i18nDescription,
+			i18nName: this.i18nName,
+			name: this.name,
+		};
 	}
 };
+
+/**
+ * @typedef {Object} MenuCommandOptions
+ * @property {string} type `message` or `user`
+ * @property {boolean} [defaultPermission] Enabled by default?
+ *
+ * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & MenuCommandOptions} DiscordMenuCommandOptions
+ */

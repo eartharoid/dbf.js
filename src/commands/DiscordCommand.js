@@ -1,16 +1,5 @@
-/**
- * @typedef DiscordCommandOptions
- * @property {string} name The name of the command
- * @property {Object.<string, string>} [i18nName] The localised name of the command
- * @property {string} description The description of the command
- * @property {Object.<string, string>} [i18nDescription] The localised description of the command
- * @property {string[]} [clientPermissions] Array of permissions the client requires to successfully execute the command
- * @property {string[]} [memberPermissions] Array of permissions a member requires to use the command
- *
- * @typedef {DiscordCommandOptions & import('../Component').ComponentOptions} DiscordCommandComponentOptions
- */
-
 const Component = require('../Component');
+const { TypeError } = require('../errors');
 
 module.exports = class DiscordCommand extends Component {
 	/**
@@ -61,5 +50,24 @@ module.exports = class DiscordCommand extends Component {
 		 * @type {string[]}
 		 */
 		this.memberPermissions = options.memberPermissions ?? [];
+
+		/**
+		 * The type of channel the command can be used in
+		 * @type {string}
+		 */
+		this.channels = options.channels?.toLowerCase() ?? 'all';
 	}
 };
+
+/**
+ * @typedef DiscordCommandOptions
+ * @property {string} name The name of the command
+ * @property {Object.<string, string>} [i18nName] The localised name of the command
+ * @property {string} description The description of the command
+ * @property {Object.<string, string>} [i18nDescription] The localised description of the command
+ * @property {string[]} [clientPermissions] Array of permissions the client requires to successfully execute the command
+ * @property {string[]} [memberPermissions] Array of permissions a member requires to use the command
+ * @property {string} [channels] Allow command to be used in `guild`, `dm`, or `all` channels?
+ *
+ * @typedef {DiscordCommandOptions & import('../Component').ComponentOptions} DiscordCommandComponentOptions
+ */

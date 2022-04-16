@@ -1,18 +1,10 @@
-/**
- * @typedef ListenerOptions
- * @property {string} event The name of the event to listen for
- * @property {import('events')} emitter The event emitter
- * @property {boolean} [once] Defaults to `false`
- *
- * @typedef {ListenerOptions & import('../Component').ComponentOptions} ListenerComponentOptions
- */
-
 const Component = require('../Component');
 const EventEmitter = require('events');
+const { TypeError } = require('../errors');
 
 module.exports = class Listener extends Component {
 	/**
-	 * Create a new menu command
+	 * Create a new listener
 	 * @param {import('../Client')} client
 	 * @param {ListenerComponentOptions} options
 	 */
@@ -46,3 +38,12 @@ module.exports = class Listener extends Component {
 	/** @abstract */
 	async run() { }
 };
+
+/**
+ * @typedef ListenerOptions
+ * @property {string} event The name of the event to listen for
+ * @property {import('events')} emitter The event emitter
+ * @property {boolean} [once] Defaults to `false`
+ *
+ * @typedef {ListenerOptions & import('../Component').ComponentOptions} ListenerComponentOptions
+ */

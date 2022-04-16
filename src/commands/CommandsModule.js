@@ -1,18 +1,15 @@
-/**
- * @typedef Commands
- * @property {Collection<string, import('./MenuCommand')>} message
- * @property {Collection<string, import('./SlashCommand')>} slash
- * @property {Collection<string, import('./StdinCommand')>} stdin
- * @property {Collection<string, import('./TextCommand')>} text
- * @property {Collection<string, import('./MenuCommand')>} user
- */
-
 const Module = require('../Module');
 const { Collection } = require('discord.js');
 const { Error } = require('../errors');
 const readline = require('readline');
 const { relative } = require('path');
 
+/**
+ * @class CommandsModule
+ * @fires CommandsModule#commandError
+ * @fires CommandsModule#commandRun
+ * @fires CommandsModule#commandSuccess
+ */
 module.exports = class CommandsModule extends Module {
 	constructor(client) {
 		super(client, 'commands');
@@ -37,23 +34,10 @@ module.exports = class CommandsModule extends Module {
 			output: process.stdout,
 		});
 
-		this.std.on('line', async input => {
-			const args = input.split(/\s/g);
-			const commandName = args.shift().toLowerCase();
-			if (this.commands.stdin.has(commandName)) {
-				const command = this.commands.stdin.get(commandName);
-				try {
-					this.emit('commandRun', command, { args });
-					await command.run(args);
-					this.emit('commandSuccess', command, { args });
-				} catch (error) {
-					this.emit('commandError', command, { error });
-				}
-			} else {
-				this.emit('commandAttempt', 'stdin', 'EXISTENCE',  { commandName });
-			}
+		this.std.on('line', this.handleStdin);
+		this.client.on('interactionCreate', this.handleInteraction);
+		this.client.on('messageCreate', this.handleMessage);
 
-		});
 	}
 
 	/**
@@ -61,12 +45,78 @@ module.exports = class CommandsModule extends Module {
 	 * @param {import('discord.js').Interaction} interaction
 	 */
 	async handleInteraction(interaction) {
-		if (interaction.isCommand()) {
-			//
-		} else if (interaction.isMessageContextMenu()) {
-			//
-		} else if (interaction.isUserContextMenu()) {
-			//
+		const type = interaction.isCommand()
+			? 'slash' : interaction.isMessageContextMenu()
+				? 'message' : interaction.isUserContextMenu()
+					? 'user' : null;
+		if (!type) return false;
+		const command = this.client.commands.components.find(c => c.type === type && c.name === interaction.commandName);
+		if (command) {
+			try {
+				const passed = await this.client.conditions.tryInteraction(interaction, command);
+				if (!passed) return false; // check permissions and other conditions
+				this.emit('commandRun', command, { interaction });
+				await command.run(interaction);
+				this.emit('commandSuccess', command, { interaction });
+			} catch (error) {
+				this.emit('commandError', command, {
+					error,
+					interaction,
+				});
+			}
+		} else {
+			this.emit('commandAttempt', type, 'EXISTENCE', { commandName: interaction.commandName });
+		}
+	}
+
+	/**
+	 * Handle a message
+	 * @param {import('discord.js').Message} message
+	 */
+	async handleMessage(message) {
+		const prefix = (typeof this.client.prefix === 'function' ? await this.client.prefix(message) : this.client.prefix)
+			.replace(/(?=\W)/g, '\\'); // escaped
+		const match = message.content.match(new RegExp(`^(${prefix}|<@!?${this.client.user.id}>\\s?)(\\S+)`, 'mi')); // prefix and command name
+		if (!match) return false; // not a command
+		const args = message.content.replace(match[0], '').trim(); // remove the prefix and command
+		const commandName = match[2].toLowerCase(); // remove the prefix from the command name
+		if (this.commands.text.has(commandName)) {
+			const command = this.commands.text.get(commandName);
+			try {
+				const passed = await this.client.conditions.tryMessage(message, command);
+				if (!passed) return false; // check permissions and other conditions
+				this.emit('commandRun', command, { message });
+				await command.run(message, args);
+				this.emit('commandSuccess', command, { message });
+			} catch (error) {
+				this.emit('commandError', command, {
+					error,
+					message,
+				});
+			}
+		} else {
+			this.emit('commandAttempt', 'text', 'EXISTENCE', { commandName });
+		}
+	}
+
+	/**
+	 * Handle a stdin line
+	 * @param {string} input
+	 */
+	async handleStdin(input) {
+		const args = input.split(/\s/g);
+		const commandName = args.shift().toLowerCase();
+		if (this.commands.stdin.has(commandName)) {
+			const command = this.commands.stdin.get(commandName);
+			try {
+				this.emit('commandRun', command, { args });
+				await command.run(args);
+				this.emit('commandSuccess', command, { args });
+			} catch (error) {
+				this.emit('commandError', command, { error });
+			}
+		} else {
+			this.emit('commandAttempt', 'stdin', 'EXISTENCE', { commandName });
 		}
 	}
 
@@ -88,6 +138,53 @@ module.exports = class CommandsModule extends Module {
 		if (!Object.keys(this.commands).includes(type)) throw new Error('F_INVALID_COMMAND_TYPE', type);
 		this.components.set(command.id, command);
 		this.commands[type].set(command.name, command);
-		this.emit('componentLoad', command);
+		this.emit('componentLoad', command, reload ?? false);
+	}
+
+	/** Publish the application (interaction) commands to Discord */
+	async publish() {
+		const commands = this.components
+			.filter(c => ['message', 'slash', 'user'].includes(c.type))
+			.map(c => c.toJSON());
+		return this.client.application.commands.set(commands);
 	}
 };
+
+/**
+ * @typedef Commands
+ * @property {Collection<string, import('./MenuCommand')>} message
+ * @property {Collection<string, import('./SlashCommand')>} slash
+ * @property {Collection<string, import('./StdinCommand')>} stdin
+ * @property {Collection<string, import('./TextCommand')>} text
+ * @property {Collection<string, import('./MenuCommand')>} user
+ */
+
+/**
+ * Emitted when a command throws an error
+ * @event CommandsModule#commandError
+ * @param {Component} command The command
+ * @param {object} context
+ * @param {Error} context.error The error
+ * @param {Message} [context.message] Present when `command.type` is `text`
+ * @param {Interaction} [context.interaction] Present when `command.type` is `slash`, `message`, or `user`
+ */
+
+/**
+ * Emitted when a command is executed
+ * @event CommandsModule#commandRun
+ * @param {Component} command The command
+ * @param {object} context
+ * @param {string[]} [context.args] Present when `command.type` is `text` or `stdin`
+ * @param {Message} [context.message] Present when `command.type` is `text`
+ * @param {Interaction} [context.interaction] Present when `command.type` is `slash`, `message`, or `user`
+ */
+
+/**
+ * Emitted when a command finishes execution successfully
+ * @event CommandsModule#commandSuccess
+ * @param {Component} command The command
+ * @param {object} context
+ * @param {string[]} [context.args] Present when `command.type` is `text` or `stdin`
+ * @param {Message} [context.message] Present when `command.type` is `text`
+ * @param {Interaction} [context.interaction] Present when `command.type` is `slash`, `message`, or `user`
+ */

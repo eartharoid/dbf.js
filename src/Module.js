@@ -4,6 +4,13 @@ const { resolve } = require('path');
 const { files: readDir } = require('node-dir');
 const { Error } = require('./errors');
 
+/**
+ * @class Module
+ * @fires Module#componentLoad
+ * @fires Module#componentReload
+ * @fires Module#componentUnload
+ * @fires Module#error
+ */
 module.exports = class Module extends EventEmitter {
 	/**
 	 * @param {import('./Client')} client
@@ -30,7 +37,7 @@ module.exports = class Module extends EventEmitter {
 	/** List files in the module directory */
 	listFiles() {
 		const moduleDir = resolve(this.client.baseDir, this.name);
-		const files = readDir(moduleDir, { sync: true });
+		const files = readDir(moduleDir, { sync: true }) ?? [];
 		return files.filter(file => file.endsWith('.js'));
 	}
 
@@ -46,7 +53,7 @@ module.exports = class Module extends EventEmitter {
 		component.filepath = filepath;
 		if (!reload && this.components.has(component.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', component.id, this.name);
 		this.components.set(component.id, component);
-		this.emit('componentLoad', component);
+		this.emit('componentLoad', component, reload ?? false);
 		return true;
 	}
 
@@ -90,8 +97,36 @@ module.exports = class Module extends EventEmitter {
 		delete require.cache[component.filepath];
 		// don't fully unload (using unload method) as removing it from `this.components` could cause an infinite loop
 		if (!reload) this.components.delete(id);
-		this.emit('componentUnload', id);
+		this.emit('componentUnload', id, reload ?? false);
 		return true;
 	}
 
 };
+
+/**
+ * Emitted when the module loads a {@link Component}
+ * @event Module#componentLoad
+ * @param {Component} component The component loaded
+ * @param {boolean} reload If the component has just been reloaded
+ */
+
+/**
+ * Emitted when the module reloads a component
+ * @event Module#componentReload
+ * @param {string} componentId The ID of component reloaded
+ */
+
+/**
+ * Emitted when the module unloads a component
+ * @event Module#componentUnload
+ * @param {string} componentId The ID of component unloaded
+ * @param {boolean} reload If the component is in the process of being reloaded
+ */
+
+/**
+ * Emitted when a critical error occurs.
+ * Most errors are thrown to be handled by the user, however component loading is done automatically and the user cannot catch any errors,
+ * so they are emitted as events (`F_MOD_LOADING_ERROR`).
+ * @event Module#error
+ * @param {Error} error The error
+ */
