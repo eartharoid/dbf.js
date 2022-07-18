@@ -16,7 +16,7 @@ module.exports = class ListenersModule extends Module {
 		/** @type {import('./Listener')} */
 		const listener = new Listener(this.client);
 		listener.filepath = filepath;
-		if (!reload && this.components.has(listener.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', listener.id, this.name);
+		if (!reload && this.components.has(listener.id)) throw new Error('ComponentAlreadyLoaded', listener.id, this.name);
 		listener._run = (...args) => listener.run(...args);
 		listener.emitter[listener.once ? 'once' : 'on'](listener.event, listener._run);
 		this.components.set(listener.id, listener);
@@ -30,7 +30,7 @@ module.exports = class ListenersModule extends Module {
 	 * @param {boolean} reload Is the listener about to be loaded again?
 	 */
 	unload(id, reload) {
-		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
+		if (!this.components.has(id)) throw new Error('UnknownComponent', id, this.name);
 		/** @type {import('./Listener')} */
 		const listener = this.components.get(id);
 		listener.emitter.off(listener.event, listener._run); // remove the listener from the EventEmitter

@@ -1,5 +1,6 @@
 const DiscordCommand = require('./DiscordCommand');
 const { Error } = require('../errors');
+const { ApplicationCommandType } = require('discord.js');
 
 module.exports = class MenuCommand extends DiscordCommand {
 	/**
@@ -15,7 +16,7 @@ module.exports = class MenuCommand extends DiscordCommand {
 		 * @type {string}
 		 */
 		this.type = options.type;
-		if (this.type !== 'message' && this.type !== 'user') throw new Error('F_INVALID_MENU_COMMAND_TYPE', this.id);
+		if (this.type !== 'message' && this.type !== 'user') throw new Error('InvalidMenuCommandType', this.id);
 
 		/**
 		 * Enabled by default?
@@ -35,7 +36,7 @@ module.exports = class MenuCommand extends DiscordCommand {
 			defaultPermission: this.defaultPermission,
 			i18nName: this.i18nName,
 			name: this.name,
-			type: this.type.toUpperCase(),
+			type: this.type === 'message' ? ApplicationCommandType.Message : ApplicationCommandType.User,
 		};
 	}
 };

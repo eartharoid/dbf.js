@@ -18,7 +18,6 @@ module.exports = class Module extends EventEmitter {
 	 */
 	constructor(client, name) {
 		super();
-
 		/** @type {import('./Client')} */
 		this.client = client;
 
@@ -51,7 +50,7 @@ module.exports = class Module extends EventEmitter {
 		const Component = require(filepath);
 		const component = new Component(this.client);
 		component.filepath = filepath;
-		if (!reload && this.components.has(component.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', component.id, this.name);
+		if (!reload && this.components.has(component.id)) throw new Error('ComponentAlreadyLoaded', component.id, this.name);
 		this.components.set(component.id, component);
 		this.emit('componentLoad', component, reload ?? false);
 		return true;
@@ -64,7 +63,7 @@ module.exports = class Module extends EventEmitter {
 			try {
 				this.load(file);
 			} catch (error) {
-				this.emit('error', new Error('F_MOD_LOADING_ERROR', this.name, error));
+				this.emit('error', new Error('ModLoadingError', this.name, error));
 			}
 		}
 	}
@@ -74,7 +73,7 @@ module.exports = class Module extends EventEmitter {
 	 * @param {string} id The ID of the component to reload
 	 */
 	reload(id) {
-		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
+		if (!this.components.has(id)) throw new Error('UnknownComponent', id, this.name);
 		const filepath = this.components.get(id).filepath;
 		this.unload(id, true);
 		this.load(filepath, true);
@@ -92,7 +91,7 @@ module.exports = class Module extends EventEmitter {
 	 * @param {boolean} reload Is the component about to be loaded again?
 	 */
 	unload(id, reload) {
-		if (!this.components.has(id)) throw new Error('F_UNKNOWN_COMPONENT', id, this.name);
+		if (!this.components.has(id)) throw new Error('UnknownComponent', id, this.name);
 		const component = this.components.get(id);
 		delete require.cache[component.filepath];
 		// don't fully unload (using unload method) as removing it from `this.components` could cause an infinite loop
@@ -126,7 +125,7 @@ module.exports = class Module extends EventEmitter {
 /**
  * Emitted when a critical error occurs.
  * Most errors are thrown to be handled by the user, however component loading is done automatically and the user cannot catch any errors,
- * so they are emitted as events (`F_MOD_LOADING_ERROR`).
+ * so they are emitted as events (`ModLoadingError`).
  * @event Module#error
  * @param {Error} error The error
  */

@@ -5,7 +5,7 @@ module.exports = class ChannelsCondition extends Condition {
 		super(client, {
 			id: 'channels',
 			name: 'channels',
-			priority: 10,
+			priority: 20,
 			type: 'both',
 		});
 	}

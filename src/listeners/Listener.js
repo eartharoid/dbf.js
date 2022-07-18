@@ -19,14 +19,14 @@ module.exports = class Listener extends Component {
 		 * @type {string}
 		 */
 		this.event = options.event;
-		if (!this.event || typeof this.event !== 'string') throw new TypeError('F_INVALID_TYPE', 'event', 'string', typeof this.event);
+		if (!this.event || typeof this.event !== 'string') throw new TypeError('InvalidType', 'event', 'string', typeof this.event);
 
 		/**
 		 * The event emitter
 		 * @type {import('events')}
 		 */
 		this.emitter = options.emitter;
-		if (!(this.emitter instanceof EventEmitter)) throw new TypeError('F_INVALID_TYPE', 'emitter', 'EventEmitter', typeof this.name);
+		if (!(this.emitter instanceof EventEmitter)) throw new TypeError('InvalidType', 'emitter', 'EventEmitter', typeof this.name);
 
 		/**
 		 * `once` or `on`

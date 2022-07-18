@@ -14,7 +14,7 @@ I made this because my bots shared a lot of code for loading files and handling 
 
 ### Originally made for
 
-- [Discord Tickets](https://github.com/discord-tickets/bot/)
+- [Discord Tickets](https://github.com/discord-tickets/bot)
 - [Christmas Countdown](https://github.com/christmas-countdown/bot) (not yet using)
 - [Left4Bot](https://github.com/left4craft/left4bot) (not yet using)
 
@@ -26,6 +26,6 @@ If you use dbf.js, submit a PR to get your bot listed here.
 
 This early version is not good enough for me to want to write documentation for it. Look at the code in the `src` directory, examples in the `test` directory, and the bots listed above for guidance.
 
-[Join my Discord server]((https://go.eartharoid.me/discord)) for help.
+[Join my Discord server]((https://lnk.earth/discord)) for help.
 
-[![Join my Discord server](https://discord.com/api/guilds/451745464480432129/widget.png?style=banner4)](https://go.eartharoid.me/discord)
+[![Join my Discord server](https://discord.com/api/guilds/451745464480432129/widget.png?style=banner4)](https://lnk.earth/discord)

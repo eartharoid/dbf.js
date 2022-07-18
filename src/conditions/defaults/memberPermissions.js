@@ -5,7 +5,7 @@ module.exports = class MemberPermissionsCondition extends Condition {
 		super(member, {
 			id: 'memberPermissions',
 			name: 'memberPermissions',
-			priority: 30,
+			priority: 40,
 			type: 'both',
 		});
 	}

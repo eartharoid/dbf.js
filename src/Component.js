@@ -21,14 +21,14 @@ module.exports = class Component {
 		 * @type {string}
 		 */
 		this.id = options.id;
-		if (!this.id || typeof this.id !== 'string') throw new TypeError('F_INVALID_TYPE', 'id', 'string', typeof this.id);
+		if (!this.id || typeof this.id !== 'string') throw new TypeError('InvalidType', 'id', 'string', typeof this.id);
 
 		/**
 		 * The module that this component belongs to
 		 * @type {import('./Module')}
 		 */
 		this.mod = this.client.mods.get(options.moduleName);
-		if (!this.mod) throw new TypeError('F_COMPONENT_NO_MOD', this.id, options.moduleName);
+		if (!this.mod) throw new TypeError('ComponentNoMod', this.id, options.moduleName);
 
 		/**
 		 * The filepath of the component

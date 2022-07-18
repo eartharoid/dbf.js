@@ -1,7 +1,12 @@
 require('dotenv').config();
 
 const { Client } = require('../src');
-
-const client = new Client({ intents: ['GUILDS'] }, { baseDir: './test' });
+const { GatewayIntentBits } = require('discord.js');
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+	],
+}, { baseDir: './test' });
 
 client.login().then(() => console.log('Connected'));

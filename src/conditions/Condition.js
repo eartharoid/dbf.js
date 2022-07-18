@@ -18,7 +18,7 @@ module.exports = class Condition extends Component {
 		 * @type {string}
 		 */
 		this.name = options.name;
-		if (!this.name || typeof this.name !== 'string') throw new TypeError('F_INVALID_TYPE', 'name', 'string', typeof this.name);
+		if (!this.name || typeof this.name !== 'string') throw new TypeError('InvalidType', 'name', 'string', typeof this.name);
 
 
 		/**
@@ -26,8 +26,8 @@ module.exports = class Condition extends Component {
 		 * @type {string}
 		 */
 		this.type = options.type;
-		if (!this.type || typeof this.type !== 'string') throw new TypeError('F_INVALID_TYPE', 'type', 'string', typeof this.type);
-		if (!['interaction', 'message', 'both'].includes(this.type)) throw new RangeError('F_INVALID_CONDITION_TYPE', this.type);
+		if (!this.type || typeof this.type !== 'string') throw new TypeError('InvalidType', 'type', 'string', typeof this.type);
+		if (!['interaction', 'message', 'both'].includes(this.type)) throw new RangeError('InvalidConditionType', this.type);
 
 		/**
 		 * The priority of the condition

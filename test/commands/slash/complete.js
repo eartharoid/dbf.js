@@ -1,4 +1,5 @@
 const { SlashCommand } = require('../../../src');
+const { ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = class CompleteCommand extends SlashCommand {
 	constructor(client) {
@@ -11,7 +12,7 @@ module.exports = class CompleteCommand extends SlashCommand {
 					autocomplete: true,
 					description: 'The name of the fruit',
 					name: 'fruit',
-					type: SlashCommand.OptionTypes.STRING,
+					type: ApplicationCommandOptionType.String,
 				},
 			],
 		});

@@ -3,8 +3,8 @@ const { MenuCommand } = require('../../../src');
 module.exports = class HelloCommand extends MenuCommand {
 	constructor(client) {
 		super(client, {
-			description: 'Say hello',
-			id: 'messageHello',
+			description: 'Say hello to the author of this message',
+			id: 'userHello',
 			name: 'Say hello',
 			type: 'message',
 		});

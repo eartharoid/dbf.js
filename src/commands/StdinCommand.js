@@ -21,7 +21,7 @@ module.exports = class StdinCommand extends Component {
 		 * @type {string}
 		 */
 		this.name = options.name;
-		if (!this.name || typeof this.name !== 'string') throw new TypeError('F_INVALID_TYPE', 'name', 'string', typeof this.name);
+		if (!this.name || typeof this.name !== 'string') throw new TypeError('InvalidType', 'name', 'string', typeof this.name);
 	}
 
 	/**

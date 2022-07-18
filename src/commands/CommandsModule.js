@@ -1,5 +1,8 @@
 const Module = require('../Module');
-const { Collection } = require('discord.js');
+const {
+	Collection,
+	InteractionType: { ApplicationCommand },
+} = require('discord.js');
 const { Error } = require('../errors');
 const readline = require('readline');
 const { relative } = require('path');
@@ -33,7 +36,7 @@ module.exports = class CommandsModule extends Module {
 		});
 
 		this.std.on('line', input => this.handleStdin(input));
-		this.client.on('interactionCreate', interaction =>  this.handleInteraction(interaction));
+		this.client.on('interactionCreate', interaction => this.handleInteraction(interaction));
 		this.client.on('messageCreate', message => this.handleMessage(message));
 
 	}
@@ -43,9 +46,10 @@ module.exports = class CommandsModule extends Module {
 	 * @param {import('discord.js').Interaction} interaction
 	 */
 	async handleInteraction(interaction) {
-		const type = interaction.isCommand()
-			? 'slash' : interaction.isMessageContextMenu()
-				? 'message' : interaction.isUserContextMenu()
+		if (interaction.type !== ApplicationCommand) return;
+		const type = interaction.isChatInputCommand()
+			? 'slash' : interaction.isMessageContextMenuCommand()
+				? 'message' : interaction.isUserContextMenuCommand()
 					? 'user' : null;
 		if (!type) return false;
 		const command = this.client.commands.components.find(c => c.type === type && c.name === interaction.commandName);
@@ -72,6 +76,7 @@ module.exports = class CommandsModule extends Module {
 	 * @param {import('discord.js').Message} message
 	 */
 	async handleMessage(message) {
+		console.log('message content', message.content);
 		const prefix = (typeof this.client.prefix === 'function' ? await this.client.prefix(message) : this.client.prefix)
 			.replace(/(?=\W)/g, '\\'); // escaped
 		const match = message.content.match(new RegExp(`^(${prefix}|<@!?${this.client.user.id}>\\s?)(\\S+)`, 'mi')); // prefix and command name
@@ -128,12 +133,12 @@ module.exports = class CommandsModule extends Module {
 		/** @type {import('../Component')} */
 		const command = new Command(this.client);
 		command.filepath = filepath;
-		if (!reload && this.components.has(command.id)) throw new Error('F_COMPONENT_ALREADY_LOADED', command.id, this.name);
+		if (!reload && this.components.has(command.id)) throw new Error('ComponentAlreadyLoaded', command.id, this.name);
 		const rel = relative(this.client.baseDir, filepath);
 		const parts = rel.split(/\//g);
 		let type = parts[1];
 		if (type === 'menu') type = command.type;
-		if (!Object.keys(this.commands).includes(type)) throw new Error('F_INVALID_COMMAND_TYPE', type);
+		if (!Object.keys(this.commands).includes(type)) throw new Error('InvalidCommandType', type);
 		this.components.set(command.id, command);
 		this.commands[type].set(command.name, command);
 		this.emit('componentLoad', command, reload ?? false);

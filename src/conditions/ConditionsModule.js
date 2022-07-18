@@ -39,7 +39,7 @@ module.exports = class ConditionsModule extends Module {
 		const Condition = require(filepath);
 		const condition = new Condition(this.client);
 		condition.filepath = filepath;
-		if (!reload && this.components.has(condition.id)) throw new Error('F_CONDITION_ALREADY_LOADED', condition.id, this.name);
+		if (!reload && this.components.has(condition.id)) throw new Error('CONDITION_ALREADY_LOADED', condition.id, this.name);
 		this.components.set(condition.id, condition);
 		this.sortConditions(); // update the arrays
 		this.emit('conditionLoad', condition, reload ?? false);

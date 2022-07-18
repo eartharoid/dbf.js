@@ -1,5 +1,5 @@
 const Module = require('../Module');
-
+const { InteractionType: { ApplicationCommandAutocomplete } } = require('discord.js');
 module.exports = class AutocompleteModule extends Module {
 	constructor(client) {
 		super(client, 'autocomplete');
@@ -12,7 +12,7 @@ module.exports = class AutocompleteModule extends Module {
 	 * @param {import('discord.js').Interaction} interaction
 	 */
 	async handleInteraction(interaction) {
-		if (!interaction.isAutocomplete()) return;
+		if (interaction.type !== ApplicationCommandAutocomplete) return;
 
 		const option = interaction.options.getFocused(true);
 		if (!option) return;
