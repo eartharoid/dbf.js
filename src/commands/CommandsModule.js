@@ -76,7 +76,6 @@ module.exports = class CommandsModule extends Module {
 	 * @param {import('discord.js').Message} message
 	 */
 	async handleMessage(message) {
-		console.log('message content', message.content);
 		const prefix = (typeof this.client.prefix === 'function' ? await this.client.prefix(message) : this.client.prefix)
 			.replace(/(?=\W)/g, '\\'); // escaped
 		const match = message.content.match(new RegExp(`^(${prefix}|<@!?${this.client.user.id}>\\s?)(\\S+)`, 'mi')); // prefix and command name
