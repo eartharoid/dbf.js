@@ -22,7 +22,7 @@ module.exports = class MenuCommand extends DiscordCommand {
 		 * Enabled by default?
 		 * @type {boolean}
 		 */
-		this.defaultPermission = options.defaultPermission ?? true;
+		this.defaultMemberPermissions = options.defaultMemberPermissions ?? true;
 	}
 
 	/**
@@ -33,9 +33,10 @@ module.exports = class MenuCommand extends DiscordCommand {
 
 	toJSON() {
 		return {
-			defaultPermission: this.defaultPermission,
-			i18nName: this.i18nName,
+			defaultMemberPermissions: this.defaultMemberPermissions,
+			dmPermission: this.channels !== 'guild',
 			name: this.name,
+			nameLocalizations: this.nameLocalizations,
 			type: this.type === 'message' ? ApplicationCommandType.Message : ApplicationCommandType.User,
 		};
 	}
@@ -44,7 +45,7 @@ module.exports = class MenuCommand extends DiscordCommand {
 /**
  * @typedef {Object} MenuCommandOptions
  * @property {string} type `message` or `user`
- * @property {boolean} [defaultPermission] Enabled by default?
+ * @property {boolean} [defaultMemberPermissions] Enabled by default?
  *
  * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & MenuCommandOptions} DiscordMenuCommandOptions
  */

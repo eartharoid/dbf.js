@@ -1,6 +1,7 @@
 /* eslint-disable sort-keys */
 
 const DiscordCommand = require('./DiscordCommand');
+const { ApplicationCommandType } = require('discord.js');
 
 module.exports = class SlashCommand extends DiscordCommand {
 	/**
@@ -18,7 +19,7 @@ module.exports = class SlashCommand extends DiscordCommand {
 		 * Enabled by default?
 		 * @type {boolean}
 		 */
-		this.defaultPermission = options.defaultPermission ?? true;
+		this.defaultMemberPermissions = options.defaultMemberPermissions ?? true;
 
 		/** @type {CommandOption[]} */
 		this.options = options.options;
@@ -32,11 +33,11 @@ module.exports = class SlashCommand extends DiscordCommand {
 
 	toJSON() {
 		return {
-			defaultPermission: this.defaultPermission,
-			description: this.description,
-			i18nDescription: this.i18nDescription,
-			i18nName: this.i18nName,
+			defaultMemberPermissions: this.defaultMemberPermissions,
+			dmPermission: this.channels !== 'guild',
 			name: this.name,
+			nameLocalizations: this.nameLocalizations,
+			type: this.type === 'message' ? ApplicationCommandType.Message : ApplicationCommandType.User,
 			options: this.options,
 		};
 	}
@@ -46,7 +47,7 @@ module.exports = class SlashCommand extends DiscordCommand {
  * A command option choice
  * @typedef OptionChoice
  * @property {string} name The name of the choice (displayed to user)
- * @property {Object.<string, string>} [i18nName] The localised name of the choice (displayed to user)
+ * @property {Object.<string, string>} [nameLocalizations] The localised name of the choice (displayed to user)
  * @property {string|number} value The value returned by Discord
  */
 /**
@@ -54,9 +55,9 @@ module.exports = class SlashCommand extends DiscordCommand {
  * @typedef CommandOption
  * @property {number} type The option's type (use `Command.option_types`)
  * @property {string} name The name of the option
- * @property {Object.<string, string>} [i18nName] The localised name of the option
+ * @property {Object.<string, string>} [nameLocalizations] The localised name of the option
  * @property {string} description The description of the option
- * @property {Object.<string, string>} [i18nDescription] The localised description of the option
+ * @property {Object.<string, string>} [descriptionLocalizations] The localised description of the option
  * @property {CommandOption[]} [options] The option's options
  * @property {OptionChoice[]} [choices] The option's choices
  * @property {boolean} [required] Defaults to `false`
@@ -69,7 +70,7 @@ module.exports = class SlashCommand extends DiscordCommand {
 /**
  * @typedef {Object} SlashCommandOptions
  * @property {CommandOption} options Chat command options
- * @property {boolean} [defaultPermission] Enabled by default?
+ * @property {boolean} [defaultMemberPermissions] Enabled by default?
  *
  * @typedef {(import('./DiscordCommand').DiscordCommandOptions) & SlashCommandOptions} DiscordSlashCommandOptions
  */

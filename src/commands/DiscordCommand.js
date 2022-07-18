@@ -24,7 +24,7 @@ module.exports = class DiscordCommand extends Component {
 		 * The localised name of the command
 		 * @type {Object.<string, string>}
 		 */
-		this.i18nName = options.i18nName;
+		this.nameLocalizations = options.nameLocalizations;
 
 		/**
 		 * The description of the command
@@ -37,7 +37,7 @@ module.exports = class DiscordCommand extends Component {
 		 * The localised description of the command
 		 * @type {Object.<string, string>}
 		 */
-		this.i18nDescription = options.i18nDescription;
+		this.descriptionLocalizations = options.descriptionLocalizations;
 
 		/**
 		 * Array of permissions the client requires to successfully execute the command
@@ -62,9 +62,9 @@ module.exports = class DiscordCommand extends Component {
 /**
  * @typedef DiscordCommandOptions
  * @property {string} name The name of the command
- * @property {Object.<string, string>} [i18nName] The localised name of the command
+ * @property {Object.<string, string>} [nameLocalizations] The localised name of the command
  * @property {string} description The description of the command
- * @property {Object.<string, string>} [i18nDescription] The localised description of the command
+ * @property {Object.<string, string>} [descriptionLocalizations] The localised description of the command
  * @property {string[]} [clientPermissions] Array of permissions the client requires to successfully execute the command
  * @property {string[]} [memberPermissions] Array of permissions a member requires to use the command
  * @property {string} [channels] Allow command to be used in `guild`, `dm`, or `all` channels?
